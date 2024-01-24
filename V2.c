@@ -41,8 +41,10 @@ void update_list(Block* new_block) {
     }
 }
 
-void* mymalloc(size_t size) {
-    if (size == 0) {
+
+// Give a block of memory in the heap to stock informations at a certain address 
+void* mymalloc(size_t size) { 
+    if (size == 0) {    //If the size entered in attribute is equal to 0, the function return NULL
         return NULL;
     }
 
@@ -50,15 +52,15 @@ void* mymalloc(size_t size) {
     place_for_block(size);
 
     // If no suitable block is found, allocate a new block using sbrk
-    size_t block_size = sizeof(Block) + size;
-    Block* current_block = sbrk(block_size);
-    if (current_block == (void*) -1) {
-        perror("sbrk");
+    size_t block_size = sizeof(Block) + size; //Calcul the total size to allocate for the block. It's the sum of the struct block size and the size asked
+    Block* current_block = sbrk(block_size); //Call sbrk() to allocate a new block of memory with the size of "size"
+    if (current_block == (void*) -1) {  //
+        perror("sbrk");  //Print the error "sbrk"
         return NULL;
     }
 
     // Initialize the new block
-    current_block->size = size;
+    current_block->size = size;  
     current_block->free = FALSE;
     current_block->next = NULL;
 
@@ -69,27 +71,29 @@ void* mymalloc(size_t size) {
 }
 
 void merge_free_blocks() {
-    Block* current_block = first_block;
-    while (current_block != NULL && current_block->next != NULL) {
-        if (current_block->free && current_block->next->free) {
+    Block* current_block = first_block;  // Initialize the address of the first block in the linked list 
+    while (current_block != NULL && current_block->next != NULL) { //While the pointer address of the current block and the one of the next block are not null 
+        if (current_block->free && current_block->next->free) { 
             // Merge adjacent free blocks
-            current_block->size += current_block->next->size;
-            current_block->next = current_block->next->next;
+            current_block->size += current_block->next->size; //add the size of the next block to the current block, mixing both block in one bigger
+            current_block->next = current_block->next->next; //update the pointer next of the current block to target the next block of the next block. And jumped the current block which has been merged with the next one
         } else {
-            current_block = current_block->next;
+            current_block = current_block->next;  //And if the blocks can't be merge together, the pointer is deplace to another block of the linked list
         }
     }
 }
 
-void release_memory(Block* block) {
-    if (block != NULL && block->free) {
+// Help to release the all memory in the free()
+void release_memory(Block* block) {  
+    if (block != NULL && block->free) { // if the pointer block is not NULL and the free is true
         // Move the program break back to release memory
         brk((void*)block);
     }
 }
 
+//Release a block of memory allocated dinamically in the heap
 void myfree(void* ptr) {
-    if (ptr == NULL) {
+    if (ptr == NULL) { //If the pointer is NULL ->return
         return;
     }
 
@@ -108,7 +112,7 @@ void myfree(void* ptr) {
     }
 }
 
-
+// This function allow the reallocation of a memory block in the heap 
 void* myrealloc(void* ptr, size_t size) {
     if (ptr == NULL) {
         // If ptr is NULL, realloc behaves like malloc
@@ -147,6 +151,8 @@ void* myrealloc(void* ptr, size_t size) {
     }
 }
 
+
+// This function allocate a block of memory initializing every octets with the value equals to 0
 void* mycalloc(size_t num_elements, size_t element_size) {
     // Calculate the total size needed
     size_t total_size = num_elements * element_size;
