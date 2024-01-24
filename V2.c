@@ -84,38 +84,34 @@ void myfree(void* ptr) {
         return;
     }
 
-    // Move back to the block information
-    Block* current_block = (Block*) ptr - 1;
+    // Cast the pointer to Block
+    Block* current_block = (Block*)ptr - 1;
 
-    if (current_block->free) {
-        // Double free detected, handle appropriately (e.g., print an error)
-        printf("Error: Double free detected\n");
-        return;
+    if (!current_block->free) {
+        // Mark the block as free
+        current_block->free = TRUE;
+
+        // Merge adjacent free blocks
+        merge_free_blocks();
     }
-
-    // Mark the block as free
-    current_block->free = TRUE;
-
-    // Merge adjacent free blocks
-    merge_free_blocks();
 }
 
-void main(){
 
-    char* a = mymalloc(sizeof(char));
+int main() {
+    char* a = (char*)mymalloc(sizeof(char));
     *a = 's';
 
-    int *the_counter = (int*) malloc(sizeof(int));
-    *the_counter =0;
-    printf("My char %c\n", *a);
+    int* the_counter = (int*)mymalloc(sizeof(int));
+    *the_counter = 0;
+
+    printf("My char: %c\n", *a);
 
     myfree(a);
     myfree(the_counter);
-
     myfree(a);
+    // Accessing a after freeing is undefined behavior
+    // Avoid doing this in real code
+    printf("My char: %c\n", *a);  // This is now vali
 
-    printf("My char: %c\n", *a);
-    printf("The counter: %d\n", *the_counter);
-
-
+    return 0;
 }
