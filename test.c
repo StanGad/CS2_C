@@ -6,6 +6,12 @@ void* mymalloc(size_t size){
 
     void* a = sbrk(size);
 
+
+    if (size == 0){
+        return;
+    }
+
+
     if(a == (void *) -1 ){
         printf("FAILURE");
         return (void*)-1;
@@ -13,13 +19,24 @@ void* mymalloc(size_t size){
         return a;
     }
 
-    
+}
 
-    // printf("pointer address %p", a);
-    // a = sbrk(0);
-    // printf("pointer address %p", a);
+void merge_free_block(){
+    if (ptr==NULL){
+        return;
+    }
 
-    // return EXIT_SUCCESS;
+    while(ptr && ptr->next){
+        if(ptr->free == TRUE && ptr->next->free == TRUE){
+            ptr->size+=ptr->next->size;
+            ptr->next=ptr->next->next;
+            if(ptr->next != NULL){
+                ptr->next->prev = ptr;
+            }
+            ptr = ptr->next;
+        }
+    }
+
 }
 
 
@@ -27,17 +44,17 @@ void free(void *ptr) {
     if (ptr == NULL) {
         return;
     }
-
-    char *block_start = (char *)ptr - sizeof(size_t);
-
-    size_t block_size = *((size_t *)block_start);
     
-    brk(block_start - block_size);
+    ptr->free= TRUE;
+    merge_free_block();
 }
 
 void main(){
 
     char* a = mymalloc(sizeof(char));
     *a = 's';
+
+    int *the_counter = (int*) malloc(sizeof(int));
+    *the_counter =0;
     printf("My char %c", *a);
 }
