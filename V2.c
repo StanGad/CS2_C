@@ -7,9 +7,9 @@
 
 // Define a structure to represent memory blocks
 typedef struct Block {
-    size_t size;
-    int free;
-    struct Block* next;
+    size_t size;    
+    int free;           
+    struct Block* next;  //The link with the next block 
 } Block;
 
 // Initialize the initial block
@@ -18,24 +18,26 @@ Block* first_block = NULL;
 void place_for_block(size_t size) {
     // Check if there are any existing blocks that can fulfill the request
     Block* current_block = first_block;
-    while (current_block != NULL) {
-        if (current_block->free && current_block->size >= size) {
-            current_block->free = FALSE;
+    while (current_block != NULL) {  //while the pointer address is not null
+        if (current_block->free && current_block->size >= size) {  //If the block is free and the size of the free block is equal or superior compare to the data size
+            current_block->free = FALSE; //The block is now occupied
             return;  // Block placed successfully
         }
-        current_block = current_block->next;
+        current_block = current_block->next; //It goes to the next block address 
     }
 }
 
+
+
 void update_list(Block* new_block) {
-    if (first_block == NULL) {
-        first_block = new_block;
+    if (first_block == NULL) { //If the pointer address of the first_block is null 
+        first_block = new_block; //The first_block change with the new block
     } else {
-        Block* last_block = first_block;
-        while (last_block->next != NULL) {
-            last_block = last_block->next;
+        Block* last_block = first_block;  // In the other case, the pointer address of the last_block is equal to the pointer address of the first_block
+        while (last_block->next != NULL) {  //While the link pointer address to the next block is not nut
+            last_block = last_block->next; //The pointer address is equal to pointer addrress of the next block to see further if the pointer is NULL or Not
         }
-        last_block->next = new_block;
+        last_block->next = new_block; //The pointer address of the last block begin the new address of the next block
     }
 }
 
@@ -165,19 +167,24 @@ void* mycalloc(size_t num_elements, size_t element_size) {
 int main() {
     char* a = (char*)mymalloc(sizeof(char));
     *a = 's';
+    char* b = (char*)malloc(sizeof(char));
+    *b ='h';
 
     int* the_counter = (int*)mymalloc(sizeof(int));
     *the_counter = 0;
 
     printf("My char: %c\n", *a);
+    printf("My char: %c\n", *b);
 
     myfree(a);
     myfree(the_counter);
+    myfree(b);
 
     // Accessing a after freeing is undefined behavior
     // Avoid doing this in real code
   //  a = (char*)mymalloc(sizeof(char));  // Allocate new memory if needed
-    printf("My char: %c\n", *a);  // This is now valid
+    //printf("My char: %c\n", *a);  // This is now valid
+    printf("My char: %c\n", *b);
 
     return 0;
 }
