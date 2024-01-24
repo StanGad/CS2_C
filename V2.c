@@ -99,3 +99,23 @@ void myfree(void* ptr) {
     // Merge adjacent free blocks
     merge_free_blocks();
 }
+
+void main(){
+
+    char* a = mymalloc(sizeof(char));
+    *a = 's';
+
+    int *the_counter = (int*) malloc(sizeof(int));
+    *the_counter =0;
+    printf("My char %c\n", *a);
+
+    myfree(a);
+    myfree(the_counter);
+
+    myfree(a);
+
+    printf("My char: %c\n", *a);
+    printf("The counter: %d\n", *the_counter);
+
+
+}
