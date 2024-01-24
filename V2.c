@@ -79,6 +79,13 @@ void merge_free_blocks() {
     }
 }
 
+void release_memory(Block* block) {
+    if (block != NULL && block->free) {
+        // Move the program break back to release memory
+        brk((void*)block);
+    }
+}
+
 void myfree(void* ptr) {
     if (ptr == NULL) {
         return;
@@ -93,9 +100,67 @@ void myfree(void* ptr) {
 
         // Merge adjacent free blocks
         merge_free_blocks();
+
+        // Release memory using sbrk
+        release_memory(current_block);
     }
 }
 
+
+void* myrealloc(void* ptr, size_t size) {
+    if (ptr == NULL) {
+        // If ptr is NULL, realloc behaves like malloc
+        return mymalloc(size);
+    }
+
+    if (size == 0) {
+        // If size is 0, realloc behaves like free
+        myfree(ptr);
+        return NULL;
+    }
+
+    // Cast the pointer to Block
+    Block* current_block = (Block*)ptr - 1;
+
+    if (current_block->size >= size) {
+        // If the existing block is large enough, no need to allocate a new block
+        return ptr;
+    } else {
+        // Allocate a new block and copy the data
+        void* new_ptr = mymalloc(size);
+        if (new_ptr == NULL) {
+            return NULL; // Allocation failed
+        }
+
+        // Copy the data from the old block to the new block
+        size_t min_size = (current_block->size < size) ? current_block->size : size;
+        for (size_t i = 0; i < min_size; ++i) {
+            ((char*)new_ptr)[i] = ((char*)ptr)[i];
+        }
+
+        // Free the old block
+        myfree(ptr);
+
+        return new_ptr;
+    }
+}
+
+void* mycalloc(size_t num_elements, size_t element_size) {
+    // Calculate the total size needed
+    size_t total_size = num_elements * element_size;
+
+    // Allocate memory using mymalloc
+    void* ptr = mymalloc(total_size);
+
+    if (ptr != NULL) {
+        // Initialize the allocated memory to zero
+        for (size_t i = 0; i < total_size; ++i) {
+            ((char*)ptr)[i] = 0;
+        }
+    }
+
+    return ptr;
+}
 
 int main() {
     char* a = (char*)mymalloc(sizeof(char));
@@ -108,10 +173,12 @@ int main() {
 
     myfree(a);
     myfree(the_counter);
-    myfree(a);
+
     // Accessing a after freeing is undefined behavior
     // Avoid doing this in real code
-    printf("My char: %c\n", *a);  // This is now vali
+  //  a = (char*)mymalloc(sizeof(char));  // Allocate new memory if needed
+    printf("My char: %c\n", *a);  // This is now valid
 
     return 0;
 }
+
