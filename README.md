@@ -14,50 +14,52 @@ This structure contains essential information, such as the size of the block, it
 
 ### Place for block
 
-This function checks if there are existing free blocks with sufficient size to fulfill the allocation request. 
+#### This function checks if there are existing free blocks with sufficient size to fulfill the allocation request. 
 
 It iterates through the linked list of blocks and marks a suitable block as occupied (free = FALSE) if found.
 
 ### Update list
 
-This function updates the linked list of blocks by adding a new block at the end. 
+#### This function updates the linked list of blocks by adding a new block at the end. 
 
 If first_block is NULL, it sets first_block to the new block. Otherwise, it traverses the list to find the last block and appends the new block.
 
 ### My malloc
 
-This function allocates a block of memory of the specified size. 
+#### This function allocates a block of memory of the specified size. 
 
 It first checks if the size is zero, returning NULL if true. Then, it attempts to find a suitable free block using place_for_block(size). If no suitable block is found, it allocates a new block using sbrk and initializes the block's properties.
 
 ### Merge free blocks
 
-This function combines adjacent free blocks in the linked list to optimize memory usage. 
+#### This function combines adjacent free blocks in the linked list to optimize memory usage. 
 
 It iterates through the list, merging consecutive free blocks by combining their sizes and updating the next block pointer.
 
 ### Release memory
 
-This function releases memory back to the system using brk if a block is free. If the provided block is not NULL and is free, it moves the program break back to release the memory.
+#### This function releases memory back to the system using brk if a block is free. 
+
+If the provided block is not NULL and is free, it moves the program break back to release the memory.
 
 ### Myfree
 
-This function frees the memory block associated with the given pointer. 
+#### This function frees the memory block associated with the given pointer. 
 
 It first checks if the pointer is NULL. Then, it casts the pointer to a Block and marks the block as free. It calls merge_free_blocks() to merge adjacent free blocks and releases memory using release_memory().
 
 ### Myrealloc
 
-This function resizes the memory block pointed to by the given pointer to the specified size. 
+#### This function resizes the memory block pointed to by the given pointer to the specified size. 
 
 If the pointer is NULL, it behaves like mymalloc(size). If the size is zero, it behaves like myfree(ptr). If the existing block is large enough, it returns the original pointer. Otherwise, it allocates a new block, copies data, and frees the old block.
 
 ### Mycalloc
 
-This function allocates a block of memory for an array with elements initialized to zero. 
+#### This function allocates a block of memory for an array with elements initialized to zero. 
 
 It calculates the total size, allocates memory using mymalloc(), and initializes the allocated memory to zero.
 
 ### Main
 
-The main() function demonstrates the usage of our memory allocator by allocating and freeing memory for characters and integers. 
+#### The main() function demonstrates the usage of our memory allocator by allocating and freeing memory for characters and integers. 
