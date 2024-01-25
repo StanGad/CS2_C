@@ -172,25 +172,73 @@ void* mycalloc(size_t num_elements, size_t element_size) {
 
 int main() {
     char* a = (char*)mymalloc(sizeof(char));
+    *a = 'd';
+   
+    printf("1- Le pointeur est %p, est sa data est %c\n",a, *a);
+
+
     *a = 's';
-    char* b = (char*)malloc(sizeof(char));
-    *b ='h';
 
-    int* the_counter = (int*)mymalloc(sizeof(int));
-    *the_counter = 0;
+    if(a !=NULL){
+        printf("2- Le pointeur est %p, est sa data est %c\n",a, *a);
+    }
+    else{
+        printf("the pointer is NULL");
+    }
+    
 
-    printf("My char: %c\n", *a);
-    printf("My char: %c\n", *b);
 
+    
+    
+
+    int* b = (int*)mycalloc(5, sizeof(int));
+    if (b != NULL){
+        printf("3- Le pointeur est %p, est sa data est %i\n", b, *b);
+        
+    }
+    else{
+        printf("Huston on a un problème");
+        printf("3- Le pointeur est %p, est sa data est %i\n", b, *b);
+        return 1;
+    }
+
+    
+    int* d = mymalloc(sizeof(int));
+    int* c = myrealloc(d, sizeof(int)*20);
+
+    if (c != NULL) {
+        printf("4 - Le pointeur est %p, est sa data est %i\n", c, *c);
+        
+    }
+    else{
+        printf("error");
+    }
+
+    
+    //THe memory has been realesed 
     myfree(a);
-    myfree(the_counter);
-    myfree(b);
+    if(a !=NULL){
+        printf("5- Le pointeur est %p, est sa data est %c\n",a, *a);
+    }
+    else{
+        printf("the memory has been realesed");
+    }
+
+    
+
+
+    
+
+
+
+
+
 
     // Accessing a after freeing is undefined behavior
     // Avoid doing this in real code
-  //  a = (char*)mymalloc(sizeof(char));  // Allocate new memory if needed
+    //a = (char*)mymalloc(sizeof(char));  // Allocate new memory if needed
     //printf("My char: %c\n", *a);  // This is now valid
-    printf("My char: %c\n", *b);
+    //printf("My char: %c\n", *b);
 
     return 0;
 }
