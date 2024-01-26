@@ -1,4 +1,4 @@
-$${\color{red}CS-My alloc project-25/01}$$
+$${\color{red}CS-My malloc project-25/01}$$
 
 ## Contributors
 ##### - Stanislas GADECEAU
