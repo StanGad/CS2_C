@@ -2,7 +2,7 @@ $${\color{red}CS-My alloc project-25/01}$$
 
 ## Contributors
 ##### - Stanislas GADECEAU
-##### - Guillaume KITE 
+##### - Guillaume EGMANN
 ##### - Emma MOLERA
 We realized this project as part of a week of computer science courses, we had to create our own versions of memory allocation functions malloc(3) , free(3), realloc(3), and calloc(3). 
 
